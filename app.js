@@ -2,6 +2,7 @@
 const express = require('express')
 const exphbs =  require('express-handlebars')
 const mongoose =require('mongoose')
+const Restaurant = require("./models/Restaurant")
 
 const app = express()
 const port = 3000
@@ -28,7 +29,10 @@ app.use(express.static('public'))
 
 // 路線設定
 app.get('/', (req, res) => {
-    res.render('index', {restaurants: restaurantList.results})
+  Restaurant.find({})
+  .lean()
+  .then(restaurantsData => res.render('index', { restaurantsData }))
+  
 })
 
 app.get('/restaurants/:restaurant_id', (req, res) => {
