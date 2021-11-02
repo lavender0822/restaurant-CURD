@@ -27,7 +27,7 @@ cd Desktop
 2.下載 restaurant_list 專案到本地電腦上
 
 ```text
-git clone https://github.com/lavender0822/restaurant_list.git
+git clone https://github.com/lavender0822/restaurant-CURD.git
 ```
 
 3.進入 restaurant_list 路徑
