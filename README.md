@@ -53,3 +53,5 @@ npm start
 - Express-Handlebars 5.3.4
 - Bootstrap 4.3.1( 搭配 popper 2.9.1 + jquery 3.6.0 )
 - Font-awesome 5.8.1
+- MongoDB
+- mongoose 6.0.12
