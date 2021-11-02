@@ -24,10 +24,9 @@ db.once('open', () => {
   console.log('good')
 })
 
-// 套入靜態檔案
 app.use(express.static('public'))
 
-// 路線設定
+// 瀏覽全部餐廳
 app.get('/', (req, res) => {
   Restaurant.find({})
   .lean()
@@ -35,19 +34,38 @@ app.get('/', (req, res) => {
   
 })
 
-app.get('/restaurants/:restaurant_id', (req, res) => {
-    const restaurant = restaurantList.results.find(restaurant => restaurant.id.toString() === req.params.restaurant_id)
-    res.render('show', { restaurant: restaurant })
+// 搜尋特定餐廳
+app.get('/search', (req, res) => {
+  const keyword = req.query.keyword.toLowerCase().trim()
+  const restaurants = restaurantList.results.filter(
+    (restaurant) => restaurant.name.toLowerCase().includes(keyword) || restaurant.category.toLowerCase().includes(keyword)
+  )
+  // { restaurants : restaurants , keyword : keyword } object literal extension
+  res.render('index', { restaurants, keyword })
 })
 
-app.get('/search', (req, res) => {
-    const keyword = req.query.keyword.toLowerCase().trim()
-    const restaurants = restaurantList.results.filter(
-      (restaurant) => restaurant.name.toLowerCase().includes(keyword) || restaurant.category.toLowerCase().includes(keyword)
-    )
-    // { restaurants : restaurants , keyword : keyword } object literal extension
-    res.render('index', { restaurants, keyword })
-  })
+// 新增餐廳頁面
+app.get('/restaurants/new', (req, res) => {
+  return res.render('new')
+})
+
+// 新增餐廳
+app.post("/restaurants", (req, res) => {
+  Restaurant.create(req.body)
+    .then(() => res.redirect("/"))
+    .catch(err => console.log(err))
+})
+
+// 瀏覽特定餐廳
+app.get('/restaurants/:restaurantId', (req, res) => {
+  const {restaurantId} = req.params
+  Restaurant.findById(restaurantId)
+    .lean()
+    .then(restaurantData => res.render("show", { restaurantData }))
+    .catch(err => console.log(err))
+})
+
+
 
 // start and listen on the Express server
 app.listen(port, () =>{
