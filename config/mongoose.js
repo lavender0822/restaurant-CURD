@@ -12,4 +12,5 @@ db.on('error', () => {
 db.once('open', () => {
   console.log('mongoose connectde!')
 })
+
 module.exports = db
