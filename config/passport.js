@@ -1,6 +1,6 @@
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
-const User = require('../models/user')
+const User = require('../models/User')
 module.exports = app => {
   // 初始化 Passport 模組
   app.use(passport.initialize())
