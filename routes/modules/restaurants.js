@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 
-const restaurant = require('../../models/restaurant')
+const Restaurant = require('../../models/Restaurant')
 
 // 新增餐廳頁面
 router.get('/new', (req, res) => {
@@ -10,7 +10,7 @@ router.get('/new', (req, res) => {
 
 // 新增餐廳
 router.post("/", (req, res) => {
-    restaurant.create(req.body)
+    Restaurant.create(req.body)
         .then(() => res.redirect("/"))
         .catch(err => console.log(err))
 })
@@ -18,7 +18,7 @@ router.post("/", (req, res) => {
 // 瀏覽特定餐廳
 router.get('/:restaurantId', (req, res) => {
     const { restaurantId } = req.params
-    restaurant.findById(restaurantId)
+    Restaurant.findById(restaurantId)
         .lean()
         .then(restaurantData => res.render("show", { restaurantData }))
         .catch(err => console.log(err))
@@ -27,7 +27,7 @@ router.get('/:restaurantId', (req, res) => {
 // 編輯餐廳頁面
 router.get("/:restaurantId/edit", (req, res) => {
     const { restaurantId } = req.params
-    restaurant.findById(restaurantId)
+    Restaurant.findById(restaurantId)
         .lean()
         .then(restaurantData => res.render("edit", { restaurantData }))
         .catch(err => console.log(err))
@@ -36,7 +36,7 @@ router.get("/:restaurantId/edit", (req, res) => {
 // 更新餐廳
 router.put("/:restaurantId", (req, res) => {
     const { restaurantId } = req.params
-    restaurant.findByIdAndUpdate(restaurantId, req.body)
+    Restaurant.findByIdAndUpdate(restaurantId, req.body)
         //可依照專案發展方向自定編輯後的動作，這邊是導向到瀏覽特定餐廳頁面
         .then(() => res.redirect(`/restaurants/${restaurantId}`))
         .catch(err => console.log(err))
@@ -45,7 +45,7 @@ router.put("/:restaurantId", (req, res) => {
 // 刪除餐廳
 router.delete("/:restaurantId", (req, res) => {
     const { restaurantId } = req.params
-    restaurant.findByIdAndDelete(restaurantId)
+    Restaurant.findByIdAndDelete(restaurantId)
         .then(() => res.redirect("/"))
         .catch(err => console.log(err))
 })
