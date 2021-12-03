@@ -3,7 +3,7 @@ const express = require('express')
 const session = require('express-session')
 const exphbs = require('express-handlebars')
 const methodOverride = require("method-override")
-const flash = rwquirw('connect-flash')
+const flash = require('connect-flash')
 
 const routes = require('./routes')
 
@@ -36,6 +36,7 @@ app.use((req, res, next) => {
   res.locals.warning_msg = req.flash('warning_msg')
   next()
 })
+
 app.use(routes)
 
 // start and listen on the Express server
