@@ -1,15 +1,51 @@
+const bcrypt = require('bcryptjs')
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
+
 const Restaurant = require("../restaurant")
 const db = require('../../config/mongoose')
+const User = require('../User')
 const restaurantList = require("../../restaurant.json").results
 
-db.once("open", () => {
-  console.log("running restaurantSeeder script...")
+const SEED_USER = [
+  {
+    name: 'user1',
+    email: 'user1@example.com',
+    password: '12345678',
+    restaurantId: [1, 2, 3]
+  },
+  {
+    name: 'user2',
+    email: 'user2@example.com',
+    password: '12345678',
+    restaurantId: [4, 5, 6]
+  }
+]
 
-  Restaurant.create(restaurantList)
+db.once('open', () => {
+  Promise.all(Array.from(SEED_USER, (SEED_USER) => {
+    return bcrypt
+      .genSalt(10)
+      .then(salt => bcrypt.hash(SEED_USER.password, salt))
+      .then(hash => User.create({
+        name: SEED_USER.name,
+        email: SEED_USER.email,
+        password: hash
+      }))
+      .then(user => {
+        const userId = user._id
+        let restaurant = []
+        SEED_USER.restaurantId.forEach(index => {
+          restaurantList[index].userId = userId
+          restaurant.push(restaurantList[index])
+        })
+        return Restaurant.create(restaurant)
+      })
+  }))
     .then(() => {
-      console.log("restaurantSeeder done!")
-      db.close()
+      console.log('done')
+      process.exit()
     })
-    .catch(err => console.log(err))
-    .finally(() => process.exit())
+    .catch(error => console.log(error))
 })
